@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% block title %}Ubah Status Laporan PKK{% endblock %}
+
+{% block content %}
+<h4 class="mb-3">Verifikasi Laporan: {{ object.nama_kegiatan }}</h4>
+
+<div class="card card-body">
+    <form method="post">
+        {% csrf_token %}
+
+        {% if form.non_field_errors %}
+            <div class="alert alert-danger">{{ form.non_field_errors }}</div>
+        {% endif %}
+
+        <div class="mb-3">
+            <label class="form-label">Status</label>
+            {{ form.status }}
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Catatan Admin</label>
+            {{ form.catatan_admin }}
+            {% if form.catatan_admin.errors %}<div class="text-danger small">{{ form.catatan_admin.errors }}</div>{% endif %}
+            <div class="form-text">Contoh: "Dokumentasi kegiatan belum tersedia."</div>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Simpan Status</button>
+        <a href="{% url 'laporan_pkk:detail' object.pk %}" class="btn btn-outline-secondary">Batal</a>
+    </form>
+</div>
+{% endblock %}

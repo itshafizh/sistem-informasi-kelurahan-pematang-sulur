@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+{% block title %}{% if object %}Edit{% else %}Tambah{% endif %} Surat Keluar{% endblock %}
+
+{% block content %}
+<div class="page-heading">{% if object %}Edit Surat Keluar{% else %}Tambah Surat Keluar{% endif %}</div>
+
+<div class="panel">
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        {% if form.non_field_errors %}
+            <div class="alert alert-danger">{{ form.non_field_errors }}</div>
+        {% endif %}
+
+        <div class="row g-3">
+            <div class="col-md-6">
+                <label class="form-label">Nomor Surat</label>
+                {{ form.nomor_surat }}
+                {% if form.nomor_surat.errors %}<div class="text-danger small">{{ form.nomor_surat.errors }}</div>{% endif %}
+            </div>
+            <div class="col-md-6">
+                <label class="form-label">Tanggal Surat</label>
+                {{ form.tanggal_surat }}
+                {% if form.tanggal_surat.errors %}<div class="text-danger small">{{ form.tanggal_surat.errors }}</div>{% endif %}
+            </div>
+
+            <div class="col-md-6">
+                <label class="form-label">Kepada</label>
+                {{ form.tujuan_surat }}
+                {% if form.tujuan_surat.errors %}<div class="text-danger small">{{ form.tujuan_surat.errors }}</div>{% endif %}
+            </div>
+            <div class="col-md-6">
+                <label class="form-label">Perihal</label>
+                {{ form.perihal }}
+                {% if form.perihal.errors %}<div class="text-danger small">{{ form.perihal.errors }}</div>{% endif %}
+            </div>
+
+            <div class="col-md-4">
+                <label class="form-label">Lampiran</label>
+                {{ form.lampiran }}
+                {% if form.lampiran.errors %}<div class="text-danger small">{{ form.lampiran.errors }}</div>{% endif %}
+            </div>
+            <div class="col-md-4">
+                <label class="form-label">Tembusan</label>
+                {{ form.tembusan }}
+            </div>
+            <div class="col-md-4">
+                <label class="form-label">Upload File</label>
+                {{ form.file_surat }}
+                {% if form.file_surat.errors %}<div class="text-danger small">{{ form.file_surat.errors }}</div>{% endif %}
+                {% if object.file_surat %}
+                    <div class="small mt-1">
+                        File saat ini: <a href="{{ object.file_surat.url }}" target="_blank">Lihat file</a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="mt-4">
+            <button type="submit" class="btn btn-primary">Simpan</button>
+            <a href="{% url 'surat_keluar:list' %}" class="btn btn-outline-secondary">Batal</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,109 @@
+{% extends 'base.html' %}
+{% block title %}{% if object %}Edit{% else %}Tambah{% endif %} Laporan PKK{% endblock %}
+
+{% block content %}
+<h4 class="mb-3">{% if object %}Edit Laporan PKK{% else %}Tambah Laporan PKK{% endif %}</h4>
+
+<div class="card card-body mb-3">
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        {% if form.non_field_errors %}
+            <div class="alert alert-danger">{{ form.non_field_errors }}</div>
+        {% endif %}
+
+        <h6 class="text-muted mb-3">Data Kegiatan</h6>
+        <div class="row g-3">
+            <div class="col-md-4">
+                <label class="form-label">Nama Pelapor</label>
+                {{ form.nama_pelapor }}
+                {% if form.nama_pelapor.errors %}<div class="text-danger small">{{ form.nama_pelapor.errors }}</div>{% endif %}
+            </div>
+            <div class="col-md-4">
+                <label class="form-label">Pokja</label>
+                {{ form.pokja }}
+                {% if form.pokja.errors %}<div class="text-danger small">{{ form.pokja.errors }}</div>{% endif %}
+            </div>
+            <div class="col-md-4">
+                <label class="form-label">RT/RW</label>
+                {{ form.rt_rw }}
+                {% if form.rt_rw.errors %}<div class="text-danger small">{{ form.rt_rw.errors }}</div>{% endif %}
+            </div>
+
+            <div class="col-md-6">
+                <label class="form-label">Nama Kegiatan</label>
+                {{ form.nama_kegiatan }}
+                {% if form.nama_kegiatan.errors %}<div class="text-danger small">{{ form.nama_kegiatan.errors }}</div>{% endif %}
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">Tanggal Kegiatan</label>
+                {{ form.tanggal_kegiatan }}
+                {% if form.tanggal_kegiatan.errors %}<div class="text-danger small">{{ form.tanggal_kegiatan.errors }}</div>{% endif %}
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">Jumlah Peserta</label>
+                {{ form.jumlah_peserta }}
+                {% if form.jumlah_peserta.errors %}<div class="text-danger small">{{ form.jumlah_peserta.errors }}</div>{% endif %}
+            </div>
+
+            <div class="col-md-12">
+                <label class="form-label">Lokasi Kegiatan</label>
+                {{ form.lokasi_kegiatan }}
+                {% if form.lokasi_kegiatan.errors %}<div class="text-danger small">{{ form.lokasi_kegiatan.errors }}</div>{% endif %}
+            </div>
+
+            <div class="col-md-6">
+                <label class="form-label">Uraian Kegiatan</label>
+                {{ form.uraian_kegiatan }}
+            </div>
+            <div class="col-md-6">
+                <label class="form-label">Hasil Kegiatan</label>
+                {{ form.hasil_kegiatan }}
+            </div>
+            <div class="col-md-12">
+                <label class="form-label">Kendala</label>
+                {{ form.kendala }}
+            </div>
+        </div>
+
+        <hr class="my-4">
+        <h6 class="text-muted mb-3">Dokumentasi Kegiatan</h6>
+        {{ formset.management_form }}
+        {% if formset.non_form_errors %}
+            <div class="alert alert-danger">{{ formset.non_form_errors }}</div>
+        {% endif %}
+
+        <div class="row g-3">
+            {% for dok_form in formset %}
+            <div class="col-md-6 border rounded p-3 mb-2">
+                {{ dok_form.id }}
+                <label class="form-label">File Dokumentasi</label>
+                {{ dok_form.file_dokumentasi }}
+                {% if dok_form.file_dokumentasi.errors %}<div class="text-danger small">{{ dok_form.file_dokumentasi.errors }}</div>{% endif %}
+
+                {% if dok_form.instance.file_dokumentasi %}
+                    <div class="small mt-1">
+                        File saat ini: <a href="{{ dok_form.instance.file_dokumentasi.url }}" target="_blank">Lihat</a>
+                    </div>
+                {% endif %}
+
+                <label class="form-label mt-2">Keterangan</label>
+                {{ dok_form.keterangan }}
+
+                {% if dok_form.instance.pk %}
+                    <div class="form-check mt-2">
+                        {{ dok_form.DELETE }}
+                        <label class="form-check-label text-danger small">Hapus foto ini</label>
+                    </div>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+
+        <div class="mt-4">
+            <button type="submit" class="btn btn-primary">Simpan</button>
+            <a href="{% url 'laporan_pkk:list' %}" class="btn btn-outline-secondary">Batal</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

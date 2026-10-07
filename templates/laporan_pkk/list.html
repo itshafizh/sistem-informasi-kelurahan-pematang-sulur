@@ -1,0 +1,143 @@
+{% extends 'base.html' %}
+{% block title %}Laporan PKK - SIAK PKK{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h4 class="mb-0">Laporan Kegiatan PKK</h4>
+    {% if request.user.profile.role.nama_role == 'admin_kelurahan' %}
+        <a href="{% url 'laporan_pkk:create' %}" class="btn btn-primary btn-sm">+ Tambah Laporan</a>
+    {% endif %}
+</div>
+
+<div class="row g-2 mb-3">
+    <div class="col-md-3">
+        <div class="card card-body text-center">
+            <div class="text-muted small">Total Kegiatan</div>
+            <div class="fs-4 fw-bold">{{ total_kegiatan }}</div>
+        </div>
+    </div>
+    {% for stat in statistik_pokja %}
+    <div class="col-md-2">
+        <div class="card card-body text-center">
+            <div class="text-muted small">{{ stat.pokja__nama_pokja }}</div>
+            <div class="fs-5 fw-bold">{{ stat.total }}</div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<form method="get" class="card card-body mb-3">
+    <div class="row g-2">
+        <div class="col-md-2">
+            <select name="bulan" class="form-select form-select-sm">
+                <option value="">Semua Bulan</option>
+                {% for i in "123456789101112"|make_list %}{% endfor %}
+                <option value="1" {% if filter_values.bulan == '1' %}selected{% endif %}>Januari</option>
+                <option value="2" {% if filter_values.bulan == '2' %}selected{% endif %}>Februari</option>
+                <option value="3" {% if filter_values.bulan == '3' %}selected{% endif %}>Maret</option>
+                <option value="4" {% if filter_values.bulan == '4' %}selected{% endif %}>April</option>
+                <option value="5" {% if filter_values.bulan == '5' %}selected{% endif %}>Mei</option>
+                <option value="6" {% if filter_values.bulan == '6' %}selected{% endif %}>Juni</option>
+                <option value="7" {% if filter_values.bulan == '7' %}selected{% endif %}>Juli</option>
+                <option value="8" {% if filter_values.bulan == '8' %}selected{% endif %}>Agustus</option>
+                <option value="9" {% if filter_values.bulan == '9' %}selected{% endif %}>September</option>
+                <option value="10" {% if filter_values.bulan == '10' %}selected{% endif %}>Oktober</option>
+                <option value="11" {% if filter_values.bulan == '11' %}selected{% endif %}>November</option>
+                <option value="12" {% if filter_values.bulan == '12' %}selected{% endif %}>Desember</option>
+            </select>
+        </div>
+        <div class="col-md-1">
+            <input type="text" name="tahun" class="form-control form-control-sm" placeholder="Tahun"
+                   value="{{ filter_values.tahun|default:'' }}">
+        </div>
+        <div class="col-md-2">
+            <select name="pokja" class="form-select form-select-sm">
+                <option value="">Semua Pokja</option>
+                {% for pokja in pokja_options %}
+                    <option value="{{ pokja.id }}"
+                        {% if filter_values.pokja == pokja.id|stringformat:'s' %}selected{% endif %}>
+                        {{ pokja.nama_pokja }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-md-2">
+            <input type="text" name="rt_rw" class="form-control form-control-sm" placeholder="RT/RW"
+                   value="{{ filter_values.rt_rw|default:'' }}">
+        </div>
+        <div class="col-md-2">
+            <select name="status" class="form-select form-select-sm">
+                <option value="">Semua Status</option>
+                {% for value, label in status_options %}
+                    <option value="{{ value }}" {% if filter_values.status == value %}selected{% endif %}>{{ label }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-md-2 d-flex gap-1">
+            <button type="submit" class="btn btn-sm btn-outline-primary">Filter</button>
+            <a href="{% url 'laporan_pkk:list' %}" class="btn btn-sm btn-outline-secondary">Reset</a>
+        </div>
+    </div>
+</form>
+
+<div class="table-responsive">
+    <table class="table table-bordered table-hover bg-white align-middle">
+        <thead class="table-light">
+            <tr>
+                <th>No</th>
+                <th>Tanggal</th>
+                <th>Pelapor</th>
+                <th>Pokja</th>
+                <th>RT/RW</th>
+                <th>Kegiatan</th>
+                <th>Peserta</th>
+                <th>Status</th>
+                <th>Detail</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for laporan in laporan_list %}
+            <tr>
+                <td>{{ forloop.counter0|add:page_obj.start_index }}</td>
+                <td>{{ laporan.tanggal_kegiatan|date:'d-m-Y' }}</td>
+                <td>{{ laporan.nama_pelapor }}</td>
+                <td>{{ laporan.pokja.nama_pokja }}</td>
+                <td>{{ laporan.rt_rw }}</td>
+                <td>{{ laporan.nama_kegiatan }}</td>
+                <td>{{ laporan.jumlah_peserta }}</td>
+                <td>
+                    {% if laporan.status == 'disetujui' %}
+                        <span class="badge bg-success">Disetujui</span>
+                    {% elif laporan.status == 'perlu_revisi' %}
+                        <span class="badge bg-danger">Perlu Revisi</span>
+                    {% else %}
+                        <span class="badge bg-warning text-dark">Menunggu Verifikasi</span>
+                    {% endif %}
+                </td>
+                <td>
+                    <a href="{% url 'laporan_pkk:detail' laporan.pk %}" class="btn btn-sm btn-outline-info">Detail</a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="9" class="text-center text-muted py-4">Belum ada data laporan PKK.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% if is_paginated %}
+<nav>
+    <ul class="pagination pagination-sm">
+        {% if page_obj.has_previous %}
+            <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}">&laquo;</a></li>
+        {% endif %}
+        <li class="page-item active"><span class="page-link">{{ page_obj.number }} / {{ page_obj.paginator.num_pages }}</span></li>
+        {% if page_obj.has_next %}
+            <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}">&raquo;</a></li>
+        {% endif %}
+    </ul>
+</nav>
+{% endif %}
+{% endblock %}

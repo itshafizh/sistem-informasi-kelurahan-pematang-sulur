@@ -1,0 +1,375 @@
+{% load widget_tweaks %}
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}SIAK PKK{% endblock %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --navy: #0F2540;
+            --navy-light: #16345C;
+            --bg: #F6F7F9;
+            --surface: #FFFFFF;
+            --border: #E2E6EB;
+            --text: #1B2430;
+            --text-muted: #64748B;
+            --blue: #0369A1;
+            --blue-soft: #E0F2FE;
+            --teal: #0F766E;
+            --teal-soft: #E6F5F2;
+            --teal-dark: #0B5A54;
+            --rose: #9D174D;
+            --rose-soft: #FCE7F3;
+            --amber: #B45309;
+            --green: #15803D;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            font-family: 'Inter', sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        h1, h2, h3, h4, h5, h6, .brand, .stat-value {
+            font-family: 'Manrope', sans-serif;
+        }
+
+        a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible {
+            outline: 2px solid var(--teal);
+            outline-offset: 2px;
+        }
+
+        .icon { width: 18px; height: 18px; stroke: currentColor; fill: none; stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round; }
+
+        /* --- Sidebar --- */
+        .sidebar {
+            width: 258px;
+            min-height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            background-color: var(--surface);
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sidebar-header {
+            background: linear-gradient(135deg, var(--teal) 0%, var(--teal-dark) 100%);
+            padding: 1.5rem 1.25rem 2.4rem;
+            display: flex;
+            align-items: center;
+            gap: 0.7rem;
+        }
+
+        .sidebar-header .emblem {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.15);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .sidebar-header .emblem .icon { width: 20px; height: 20px; stroke: #fff; }
+
+        .sidebar-header .titles {
+            line-height: 1.25;
+        }
+
+        .sidebar-header .app-name {
+            color: #fff;
+            font-weight: 700;
+            font-size: 0.98rem;
+        }
+
+        .sidebar-header .app-sub {
+            color: rgba(255,255,255,0.75);
+            font-size: 0.7rem;
+            font-weight: 500;
+        }
+
+        /* Kartu profil user, sengaja "menumpuk" ke atas header (efek elevasi seperti referensi) */
+        .sidebar-profile {
+            margin: -1.5rem 0.9rem 0.75rem;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 0.9rem 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            box-shadow: 0 4px 14px rgba(15, 37, 64, 0.06);
+        }
+
+        .sidebar-profile .avatar {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            background: var(--teal-soft);
+            color: var(--teal-dark);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.85rem;
+            flex-shrink: 0;
+        }
+
+        .sidebar-profile .name {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .sidebar-profile .status {
+            display: flex;
+            align-items: center;
+            gap: 0.35rem;
+            font-size: 0.72rem;
+            color: var(--text-muted);
+            margin-top: 0.1rem;
+        }
+
+        .sidebar-profile .status .dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--green);
+            flex-shrink: 0;
+        }
+
+        /* --- Menu --- */
+        .sidebar nav {
+            padding: 0.4rem 0.85rem;
+            flex: 1;
+        }
+
+        .sidebar nav .section-label {
+            font-size: 0.68rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: none;
+            padding: 0.6rem 0.6rem 0.4rem;
+        }
+
+        .sidebar a {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.62rem 0.7rem;
+            border-radius: 8px;
+            color: #3F4B5B;
+            text-decoration: none;
+            font-size: 0.87rem;
+            font-weight: 500;
+            margin-bottom: 2px;
+            border-left: 3px solid transparent;
+            transition: background-color 0.15s ease, color 0.15s ease;
+        }
+
+        .sidebar a .icon { flex-shrink: 0; color: #7C8798; transition: color 0.15s ease; }
+
+        .sidebar a:hover {
+            background-color: var(--teal-soft);
+            color: var(--teal-dark);
+        }
+        .sidebar a:hover .icon { color: var(--teal-dark); }
+
+        .sidebar a.active {
+            background-color: var(--teal-soft);
+            color: var(--teal-dark);
+            border-left-color: var(--teal);
+            font-weight: 600;
+        }
+        .sidebar a.active .icon { color: var(--teal); }
+
+        .sidebar-footer {
+            border-top: 1px solid var(--border);
+            padding: 0.75rem 0.95rem;
+        }
+
+        .sidebar-footer a {
+            color: #94A0AF;
+            font-size: 0.83rem;
+        }
+        .sidebar-footer a:hover { color: var(--rose); background-color: var(--rose-soft); }
+        .sidebar-footer a:hover .icon { color: var(--rose); }
+
+        /* --- Main content --- */
+        .main-content {
+            margin-left: 258px;
+        }
+
+        .topbar {
+            background: var(--surface);
+            border-bottom: 1px solid var(--border);
+            padding: 1rem 2.25rem;
+            display: flex;
+            align-items: baseline;
+            justify-content: space-between;
+        }
+
+        .topbar .greeting { font-size: 0.85rem; color: var(--text-muted); }
+        .topbar .date { font-size: 0.82rem; color: var(--text-muted); }
+
+        .content-inner { padding: 2rem 2.25rem; }
+
+        .page-heading {
+            font-weight: 700;
+            font-size: 1.5rem;
+            color: var(--text);
+            margin-bottom: 1.5rem;
+        }
+
+        /* --- Cards --- */
+        .card { border: 1px solid var(--border); border-radius: 10px; box-shadow: none; }
+
+        .stat-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 1.25rem 1.35rem;
+            display: flex;
+            align-items: flex-start;
+            gap: 0.9rem;
+        }
+
+        .stat-icon {
+            width: 40px; height: 40px; border-radius: 9px;
+            display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0;
+        }
+        .stat-icon.blue { background: var(--blue-soft); color: var(--blue); }
+        .stat-icon.teal { background: var(--teal-soft); color: var(--teal-dark); }
+        .stat-icon.rose { background: var(--rose-soft); color: var(--rose); }
+
+        .stat-label { font-size: 0.82rem; color: var(--text-muted); font-weight: 500; }
+        .stat-value {
+            font-size: 1.85rem; font-weight: 700; color: var(--text);
+            line-height: 1.2; font-variant-numeric: tabular-nums; margin: 0.1rem 0;
+        }
+        .stat-sub { font-size: 0.78rem; color: var(--text-muted); }
+
+        .panel {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 1.3rem 1.4rem;
+        }
+        .panel-title { font-weight: 600; font-size: 0.95rem; color: var(--text); margin-bottom: 1.1rem; }
+
+        /* --- Tables --- */
+        .table { font-size: 0.89rem; }
+        .table thead th {
+            font-weight: 600; font-size: 0.76rem; color: var(--text-muted);
+            background-color: transparent !important;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 0.65rem;
+        }
+        .table td { vertical-align: middle; border-color: var(--border); padding-top: 0.65rem; padding-bottom: 0.65rem; }
+        .table tbody tr:last-child td { border-bottom: none; }
+
+        .empty-state { text-align: center; padding: 2.25rem 1rem; color: var(--text-muted); }
+        .empty-state .icon { width: 30px; height: 30px; margin-bottom: 0.6rem; opacity: 0.4; }
+        .empty-state p { font-size: 0.85rem; margin: 0; }
+
+        /* --- Buttons --- */
+        .btn-primary { background-color: var(--teal-dark); border-color: var(--teal-dark); }
+        .btn-primary:hover { background-color: var(--teal); border-color: var(--teal); }
+        .btn-outline-primary { color: var(--teal-dark); border-color: var(--teal-dark); }
+        .btn-outline-primary:hover { background-color: var(--teal-dark); border-color: var(--teal-dark); }
+
+        @media (max-width: 768px) {
+            .sidebar { width: 100%; min-height: auto; position: relative; }
+            .main-content { margin-left: 0; }
+            .topbar { padding: 1rem 1.25rem; flex-direction: column; align-items: flex-start; gap: 0.2rem; }
+            .content-inner { padding: 1.25rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <div class="emblem">
+                <svg class="icon" viewBox="0 0 24 24"><path d="M3 21h18"/><path d="M5 21V9l7-5 7 5v12"/><path d="M9 21v-6h6v6"/></svg>
+            </div>
+            <div class="titles">
+                <div class="app-name">SIAK PKK</div>
+                <div class="app-sub">Sistem Administrasi Kelurahan</div>
+            </div>
+        </div>
+
+        <div class="sidebar-profile">
+            <div class="avatar">{{ request.user.username|slice:":2"|upper }}</div>
+            <div>
+                <div class="name">{{ request.user.profile.nama_lengkap|default:request.user.username }}</div>
+                <div class="status">
+                    <span class="dot"></span>
+                    {% if request.user.profile.role.nama_role == 'admin_kelurahan' %}Admin Kelurahan
+                    {% elif request.user.profile.role.nama_role == 'pengurus_pkk' %}Pengurus PKK
+                    {% else %}Aktif{% endif %}
+                </div>
+            </div>
+        </div>
+
+        <nav>
+            <a href="{% url 'dashboard:index' %}">
+                <svg class="icon" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg>
+                Beranda
+            </a>
+            <a href="{% url 'surat_masuk:list' %}">
+                <svg class="icon" viewBox="0 0 24 24"><path d="M22 12h-6l-2 3h-4l-2-3H2"/><path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11Z"/></svg>
+                Surat Masuk
+            </a>
+            <a href="{% url 'surat_keluar:list' %}">
+                <svg class="icon" viewBox="0 0 24 24"><path d="M22 2 11 13"/><path d="M22 2 15 22l-4-9-9-4 20-7Z"/></svg>
+                Surat Keluar
+            </a>
+            <a href="{% url 'laporan_pkk:list' %}">
+                <svg class="icon" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                Laporan PKK
+            </a>
+        </nav>
+
+        <div class="sidebar-footer">
+            <a href="{% url 'accounts:logout' %}" style="display:flex; align-items:center; gap:0.65rem; padding:0.55rem 0.6rem; border-radius:8px; text-decoration:none;">
+                <svg class="icon" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5"/><path d="M21 12H9"/></svg>
+                Keluar
+            </a>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <div class="topbar">
+            <div class="greeting">
+                Selamat datang, {{ request.user.profile.nama_lengkap|default:request.user.username }}
+            </div>
+            <div class="date">{% now "l, d F Y" %}</div>
+        </div>
+
+        <div class="content-inner">
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+
+            {% block content %}{% endblock %}
+        </div>
+    </div>
+</body>
+</html>

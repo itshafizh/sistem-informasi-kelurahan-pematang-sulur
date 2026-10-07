@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+{% block title %}Detail Laporan PKK{% endblock %}
+
+{% block content %}
+<h4 class="mb-3">Detail Laporan Kegiatan PKK</h4>
+
+<div class="card card-body mb-3">
+    <table class="table table-borderless mb-0">
+        <tr><th style="width:220px;">Nama Pelapor</th><td>{{ laporan.nama_pelapor }}</td></tr>
+        <tr><th>Pokja</th><td>{{ laporan.pokja.nama_pokja }}</td></tr>
+        <tr><th>RT/RW</th><td>{{ laporan.rt_rw }}</td></tr>
+        <tr><th>Nama Kegiatan</th><td>{{ laporan.nama_kegiatan }}</td></tr>
+        <tr><th>Tanggal Kegiatan</th><td>{{ laporan.tanggal_kegiatan|date:'d-m-Y' }}</td></tr>
+        <tr><th>Lokasi Kegiatan</th><td>{{ laporan.lokasi_kegiatan }}</td></tr>
+        <tr><th>Jumlah Peserta</th><td>{{ laporan.jumlah_peserta }}</td></tr>
+        <tr><th>Uraian Kegiatan</th><td>{{ laporan.uraian_kegiatan|linebreaks }}</td></tr>
+        <tr><th>Hasil Kegiatan</th><td>{{ laporan.hasil_kegiatan|default:'-'|linebreaks }}</td></tr>
+        <tr><th>Kendala</th><td>{{ laporan.kendala|default:'-'|linebreaks }}</td></tr>
+        <tr>
+            <th>Status</th>
+            <td>
+                {% if laporan.status == 'disetujui' %}
+                    <span class="badge bg-success">Disetujui</span>
+                {% elif laporan.status == 'perlu_revisi' %}
+                    <span class="badge bg-danger">Perlu Revisi</span>
+                {% else %}
+                    <span class="badge bg-warning text-dark">Menunggu Verifikasi</span>
+                {% endif %}
+            </td>
+        </tr>
+        {% if laporan.catatan_admin %}
+        <tr><th>Catatan Admin</th><td class="text-danger">{{ laporan.catatan_admin|linebreaks }}</td></tr>
+        {% endif %}
+        <tr><th>Sumber Data</th><td>{{ laporan.get_sumber_data_display }}</td></tr>
+    </table>
+</div>
+
+<div class="card card-body mb-3">
+    <h6 class="mb-3">Dokumentasi Kegiatan</h6>
+    <div class="row g-2">
+        {% for dok in laporan.dokumentasi_set.all %}
+        <div class="col-md-3">
+            <div class="border rounded p-2">
+                <a href="{{ dok.file_dokumentasi.url }}" target="_blank">Lihat File</a>
+                {% if dok.keterangan %}<div class="small text-muted">{{ dok.keterangan }}</div>{% endif %}
+            </div>
+        </div>
+        {% empty %}
+        <p class="text-muted mb-0">Belum ada dokumentasi.</p>
+        {% endfor %}
+    </div>
+</div>
+
+<div class="mt-3">
+    {% if request.user.profile.role.nama_role == 'admin_kelurahan' %}
+        <a href="{% url 'laporan_pkk:status_update' laporan.pk %}" class="btn btn-sm btn-primary">Ubah Status</a>
+        <a href="{% url 'laporan_pkk:update' laporan.pk %}" class="btn btn-sm btn-warning">Edit</a>
+        <a href="{% url 'laporan_pkk:delete' laporan.pk %}" class="btn btn-sm btn-danger">Hapus</a>
+    {% endif %}
+    <a href="{% url 'laporan_pkk:list' %}" class="btn btn-sm btn-outline-secondary">Kembali</a>
+</div>
+{% endblock %}

@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% block title %}Detail Surat Masuk{% endblock %}
+
+{% block content %}
+<div class="page-heading">Detail Surat Masuk</div>
+
+<div class="panel">
+    <table class="table table-borderless mb-0">
+        <tr><th style="width:220px;">No. Surat yang Diterima</th><td>{{ surat.nomor_surat }}</td></tr>
+        <tr><th>Tanggal Surat</th><td>{{ surat.tanggal_surat|date:'d-m-Y' }}</td></tr>
+        <tr><th>Tanggal Terima Surat</th><td>{{ surat.tanggal_diterima|date:'d-m-Y' }}</td></tr>
+        <tr><th>Dari</th><td>{{ surat.asal_pengirim }}</td></tr>
+        <tr><th>Perihal</th><td>{{ surat.perihal }}</td></tr>
+        <tr><th>Lampiran</th><td>{{ surat.lampiran|default:'-' }}</td></tr>
+        <tr><th>Diteruskan Kepada</th><td>{{ surat.ditujukan_kepada|default:'-' }}</td></tr>
+        <tr>
+            <th>File Surat</th>
+            <td>
+                {% if surat.file_surat %}
+                    <a href="{{ surat.file_surat.url }}" target="_blank" class="btn btn-sm btn-outline-primary">Lihat/Download</a>
+                {% else %}
+                    <span class="text-muted">Tidak ada file</span>
+                {% endif %}
+            </td>
+        </tr>
+        <tr><th>Diinput oleh</th><td>{{ surat.user_input.username }}</td></tr>
+        <tr><th>Waktu Input</th><td>{{ surat.created_at|date:'d-m-Y H:i' }}</td></tr>
+    </table>
+</div>
+
+<div class="mt-3">
+    <a href="{% url 'surat_masuk:update' surat.pk %}" class="btn btn-warning btn-sm">Edit</a>
+    <a href="{% url 'surat_masuk:list' %}" class="btn btn-outline-secondary btn-sm">Kembali</a>
+</div>
+{% endblock %}
