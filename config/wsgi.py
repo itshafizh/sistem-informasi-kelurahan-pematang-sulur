@@ -1,5 +1,5 @@
 """
-WSGI config untuk project SIAK PKK.
+WSGI config untuk project SI SULUR.
 Dipakai saat deploy ke server production (misalnya via Gunicorn + Nginx).
 """
 

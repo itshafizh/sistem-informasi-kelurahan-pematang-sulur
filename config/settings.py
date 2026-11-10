@@ -1,5 +1,5 @@
 """
-Django settings untuk project SIAK PKK.
+Django settings untuk project SI SULUR.
 Konfigurasi sensitif (SECRET_KEY, DB) diambil dari file .env (lihat python-decouple).
 """
 
@@ -57,6 +57,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'apps.accounts.context_processors.sidebar_info',
             ],
         },
     },

@@ -51,16 +51,6 @@ class SuratMasukForm(forms.ModelForm):
 
         return file
 
-    def clean(self):
-        cleaned_data = super().clean()
-        tanggal_surat = cleaned_data.get('tanggal_surat')
-        tanggal_diterima = cleaned_data.get('tanggal_diterima')
-
-        if tanggal_surat and tanggal_diterima and tanggal_diterima < tanggal_surat:
-            raise ValidationError("Tanggal diterima tidak boleh sebelum tanggal surat.")
-
-        return cleaned_data
-
 
 class SuratMasukFilterForm(forms.Form):
     q = forms.CharField(required=False, label='Pencarian')

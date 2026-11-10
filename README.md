@@ -1,4 +1,4 @@
-# SIAK PKK — Sistem Informasi Administrasi Kelurahan
+# SI SULUR — Sistem Informasi Administrasi Kelurahan
 
 Setup awal (Tahap 2) project Django untuk digitalisasi surat masuk/keluar dan
 pelaporan kegiatan PKK.

@@ -16,7 +16,9 @@ class SuratKeluarListView(RoleRequiredMixin, ListView):
     allowed_roles = ['admin_kelurahan']
 
     def get_queryset(self):
-        qs = SuratKeluar.objects.all()
+        # Urutan: yang paling baru diinput berada di atas.
+        # '-id' sebagai penentu cadangan agar urutan selalu konsisten.
+        qs = SuratKeluar.objects.all().order_by('-created_at', '-id')
 
         q = self.request.GET.get('q', '').strip()
         tanggal_mulai = self.request.GET.get('tanggal_mulai', '').strip()
